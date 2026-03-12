@@ -16,7 +16,10 @@ HEADERS += \
     mainwindow.h
 
 FORMS += \
-    mainwindow.ui
+    administrator.ui \
+    mainwindow.ui \
+    organizer.ui \
+    vendor.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
