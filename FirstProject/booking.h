@@ -3,13 +3,26 @@
 
 #include <QObject>
 
-class booking : public QObject
-{
-    Q_OBJECT
-public:
-    explicit booking(QObject *parent = nullptr);
+#include "user.h"
+#include "marketdate.h"
 
-signals:
+class Booking
+//       : public QObject
+{
+    // Q_OBJECT
+    public:
+        // explicit Booking(QObject *parent = nullptr);
+        Booking(Vendor* v, MarketDate* md);
+
+        // getters
+        Vendor* getVendor();
+        MarketDate* getMarketDate();
+
+    private:
+        Vendor* vendor;
+        MarketDate* marketDate;
+
+//  signals:
 
 };
 

@@ -67,6 +67,22 @@ void Storage::loadData() {
     vendor8.setLiabilityInsurance(107593443, "Westport Insurance Corporation", "2030-06-30");
     vendor8.setFoodHandlerCert(759322, "2030-06-30");
     vendors.push_back(std::move(vendor8));
+
+    MarketDate marketDate1("2026-06-07");
+    marketDates.push_back(marketDate1);
+
+    MarketDate marketDate2("2026-06-14");
+    marketDates.push_back(marketDate2);
+
+    MarketDate marketDate3("2026-06-21");
+    marketDates.push_back(marketDate3);
+
+    MarketDate marketDate4("2026-06-28");
+    marketDates.push_back(marketDate4);
+}
+
+std::vector<MarketDate>& Storage::getMarketDates() {
+    return marketDates;
 }
 
 const std::vector<Vendor>& Storage::getVendors() const {

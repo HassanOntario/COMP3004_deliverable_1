@@ -10,12 +10,14 @@
 #include "vendor.h"
 #include "organizer.h"
 #include "admin.h"
+#include "marketdate.h"
 
 class Storage {
     public:
         Storage();
 
         void loadData();
+        std::vector<MarketDate>& getMarketDates();
         const std::vector<Vendor>& getVendors() const;
         // std::vector<std::unique_ptr<User>> instead of std::vector<User*>
         // because we won't have to manually delete.
@@ -25,6 +27,7 @@ class Storage {
         const Admin& getAdmin() const;
 
     private:
+        std::vector<MarketDate> marketDates;
         std::vector<Vendor> vendors;
         Organizer organizer;
         Admin admin;

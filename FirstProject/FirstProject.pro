@@ -11,11 +11,14 @@ CONFIG += c++11
 SOURCES += \
     admin.cpp \
     booking.cpp \
+    bookinglist.cpp \
     bookingslots.cpp \
+    dashboardcontrol.cpp \
     main.cpp \
     mainwindow.cpp \
     marketdate.cpp \
     organizer.cpp \
+    stallbookingcontrol.cpp \
     user.cpp \
     vendor.cpp \
     storage.cpp
@@ -23,10 +26,13 @@ SOURCES += \
 HEADERS += \
     admin.h \
     booking.h \
+    bookinglist.h \
     bookingslots.h \
+    dashboardcontrol.h \
     mainwindow.h \
     marketdate.h \
     organizer.h \
+    stallbookingcontrol.h \
     user.h \
     vendor.h \
     storage.h
@@ -38,3 +44,5 @@ FORMS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+DISTFILES +=

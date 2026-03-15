@@ -16,7 +16,7 @@ class BookingSlots {
         const std::vector<Vendor*>& getBookedSlots() const;
 
     private:
-        std::vector<Vendor*> slots;
+        std::vector<Vendor*> bookingSlots;
 };
 
 #endif // BOOKINGSLOTS_H
