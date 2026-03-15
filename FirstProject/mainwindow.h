@@ -2,6 +2,9 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <vector>
+#include "vendor.h"
+#include "storage.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -14,13 +17,21 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    const Vendor* itemIn(const std::vector<Vendor>& list, const QString& element) const;
 
 private slots:
     void on_p1Button_clicked();
     void on_returnLogin_clicked();
+    void on_vDash_clicked();
+    void on_vBrowse_clicked();
+    void on_vHome_clicked();
 
 private:
     Ui::MainWindow *ui;
+    Storage storage;
+    const Vendor* vendorUser;
+
+
 };
 
 

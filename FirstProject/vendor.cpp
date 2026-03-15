@@ -1,6 +1,6 @@
 #include "vendor.h"
 
-Vendor::Vendor(std::string username) : User(username) {};
+Vendor::Vendor(QString username) : User(username) {};
 
 void Vendor::setCategory(int i) {
     if (i == 0) {
@@ -11,7 +11,7 @@ void Vendor::setCategory(int i) {
 }
 
 // setters
-void Vendor::setBusinessInfo(std::string n, std::string on, std::string ea, long pn, std::string ma) {
+void Vendor::setBusinessInfo(QString n, QString on, QString ea, long pn, QString ma) {
     businessInfo.name = n;
     businessInfo.ownerName = on;
     businessInfo.emailAddress = ea;
@@ -19,28 +19,28 @@ void Vendor::setBusinessInfo(std::string n, std::string on, std::string ea, long
     businessInfo.mailingAddress = ma;
 };
 
-void Vendor::setBusinessLicence(int ln, std::string ed) {
+void Vendor::setBusinessLicence(int ln, QString ed) {
     businessLicence.licenceNum = ln;
     businessLicence.expirationDate = ed;
 };
 
-void Vendor::setLiabilityInsurance(long pn, std::string ip, std::string ed) {
+void Vendor::setLiabilityInsurance(long pn, QString ip, QString ed) {
     liabilityInsurance.policyNum = pn;
     liabilityInsurance.insuranceProvider = ip;
     liabilityInsurance.expirationDate = ed;
 };
 
-void Vendor::setFoodHandlerCert(int cn, std::string ed) {
+void Vendor::setFoodHandlerCert(int cn, QString ed) {
     foodHandlerCert.certNum = cn;
     foodHandlerCert.expirationDate = ed;
 }
 
 // getters
-int Vendor::getCategory() {
+int Vendor::getCategory() const {
     return vendorType;
 }
 
-BusinessInfo Vendor::getBusinessInfo() {
+BusinessInfo Vendor::getBusinessInfo() const {
     return businessInfo;
     /*
     std::cout << "Business Name: " << businessInfo.name
@@ -52,7 +52,7 @@ BusinessInfo Vendor::getBusinessInfo() {
     */
 }
 
-BusinessLicence Vendor::getBusinessLicence() {
+BusinessLicence Vendor::getBusinessLicence() const {
     return businessLicence;
     /*
     std::cout << "Licence Number: " << businessLicence.licenceNum
@@ -61,7 +61,7 @@ BusinessLicence Vendor::getBusinessLicence() {
     */
 }
 
-Insurance Vendor::getLiabilityInsurance() {
+Insurance Vendor::getLiabilityInsurance() const {
     return liabilityInsurance;
     /*
     std::cout << "Policy Number: " << liabilityInsurance.policyNum
@@ -71,7 +71,7 @@ Insurance Vendor::getLiabilityInsurance() {
     */
 }
 
-Certification Vendor::getFoodHandlerCert() {
+Certification Vendor::getFoodHandlerCert() const {
     return foodHandlerCert;
     /*
     if (foodHandlerCert.certNum) {

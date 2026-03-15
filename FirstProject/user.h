@@ -2,18 +2,19 @@
 #define USER_H
 
 #include <iostream>
-#include <string>
+#include <QString>
 
 class User {
     public:
-        User(std::string username) : username(username) {};
+        User(QString username) : username(username) {};
         virtual ~User() {}
 
-        bool verifyUsername(std::string inputValue);
+        QString getUsername() const;
+        bool verifyUsername(QString inputValue);
         void print() const;
 
     protected:
-        std::string username;
+        QString username;
 };
 
 #endif // USER_H

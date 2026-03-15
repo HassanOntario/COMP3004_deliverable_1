@@ -1,10 +1,15 @@
 #include "user.h"
+#include <QDebug>
 
-bool User::verifyUsername(std::string inputValue) {
+bool User::verifyUsername(QString inputValue) {
     if (inputValue == username) { return true; }
     return false;
 }
 
 void User::print() const {
-    std::cout << username << std::endl;
+    qDebug() << username;
+}
+
+QString User::getUsername() const {
+    return username;
 }

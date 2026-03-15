@@ -1,3 +1,3 @@
 #include "admin.h"
 
-Admin::Admin(std::string username) : User(username) {};
+Admin::Admin(QString username) : User(username) {};

@@ -2,6 +2,8 @@
 #define VENDOR_H
 
 #include "user.h"
+#include <QString>
+
 
 enum Category {
     Food,
@@ -9,47 +11,47 @@ enum Category {
 };
 
 struct BusinessInfo {
-    std::string name;
-    std::string ownerName;
-    std::string emailAddress;
+    QString name;
+    QString ownerName;
+    QString emailAddress;
     long phoneNumber;
-    std::string mailingAddress;
+    QString mailingAddress;
 };
 
 // expirationDate uses String for now, will use a more suitable data type when we need date functionality
 struct BusinessLicence {
     int licenceNum;
-    std::string expirationDate;
+    QString expirationDate;
 };
 
 struct Insurance {
     long policyNum;
-    std::string insuranceProvider;
-    std::string expirationDate;
+    QString insuranceProvider;
+    QString expirationDate;
 };
 
 struct Certification {
     int certNum;
-    std::string expirationDate;
+    QString expirationDate;
 };
 
 class Vendor : public User {
     public:
-        Vendor(std::string username);
+        Vendor(QString username);
 
         // setters
         void setCategory(int i);
-        void setBusinessInfo(std::string n, std::string on, std::string ea, long pn, std::string ma);
-        void setBusinessLicence(int ln, std::string ed);
-        void setLiabilityInsurance(long pn, std::string ip, std::string ed);
-        void setFoodHandlerCert(int cn, std::string ed);
+        void setBusinessInfo(QString n, QString on, QString ea, long pn, QString ma);
+        void setBusinessLicence(int ln, QString ed);
+        void setLiabilityInsurance(long pn, QString ip, QString ed);
+        void setFoodHandlerCert(int cn, QString ed);
 
         // getters
-        int getCategory();
-        BusinessInfo getBusinessInfo();
-        BusinessLicence getBusinessLicence();
-        Insurance getLiabilityInsurance();
-        Certification getFoodHandlerCert();
+        int getCategory() const;
+        BusinessInfo getBusinessInfo() const;
+        BusinessLicence getBusinessLicence() const;
+        Insurance getLiabilityInsurance() const;
+        Certification getFoodHandlerCert() const;
 
     private:
         enum Category vendorType; // 0 - Food, 1 - Artisan

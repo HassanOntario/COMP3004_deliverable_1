@@ -5,7 +5,7 @@
 
 class Admin : public User {
     public:
-        Admin(std::string username);
+        Admin(QString username);
 };
 
 #endif // ADMIN_H

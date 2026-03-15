@@ -5,7 +5,7 @@
 
 class Organizer : public User {
     public:
-        Organizer(std::string username);
+        Organizer(QString username);
 };
 
 #endif // ORGANIZER_H
