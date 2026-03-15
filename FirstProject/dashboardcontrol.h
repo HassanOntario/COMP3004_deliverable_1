@@ -6,21 +6,22 @@
 
 class DashboardControl {
     public:
-        DashboardControl(Vendor* v);
+        DashboardControl(const Vendor* v = nullptr);
 
         // vendor info
-        int getCategory(Vendor* v) { return v->getCategory(); }
-        BusinessInfo getBusinessInfo(Vendor* v) { return v->getBusinessInfo(); }
-        BusinessLicence getBusinessLicence(Vendor* v) { return v->getBusinessLicence(); }
-        Insurance getLiabilityInsurance(Vendor* v) { return v->getLiabilityInsurance(); }
-        Certification getFoodHanderCert(Vendor* v) { return v->getFoodHandlerCert(); }
+        const Vendor* getVendor() const { return vendor; }
+        int getCategory() const { return vendor->getCategory(); }
+        BusinessInfo getBusinessInfo() const { return vendor->getBusinessInfo(); }
+        BusinessLicence getBusinessLicence() const { return vendor->getBusinessLicence(); }
+        Insurance getLiabilityInsurance() const { return vendor->getLiabilityInsurance(); }
+        Certification getFoodHanderCert() const { return vendor->getFoodHandlerCert(); }
 
         // stall bookings
 
 
 
     private:
-        Vendor* vendor;
+        const Vendor* vendor;
 };
 
 #endif // DASHBOARDCONTROL_H

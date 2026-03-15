@@ -126,9 +126,9 @@
      <widget class="QLabel" name="vendorLabel">
       <property name="geometry">
        <rect>
-        <x>10</x>
-        <y>10</y>
-        <width>291</width>
+        <x>220</x>
+        <y>110</y>
+        <width>331</width>
         <height>17</height>
        </rect>
       </property>
@@ -141,9 +141,9 @@
      <widget class="QLabel" name="orgLabel">
       <property name="geometry">
        <rect>
-        <x>310</x>
-        <y>210</y>
-        <width>271</width>
+        <x>220</x>
+        <y>110</y>
+        <width>341</width>
         <height>17</height>
        </rect>
       </property>
@@ -156,9 +156,9 @@
      <widget class="QLabel" name="adminLabel">
       <property name="geometry">
        <rect>
-        <x>260</x>
-        <y>20</y>
-        <width>201</width>
+        <x>230</x>
+        <y>110</y>
+        <width>351</width>
         <height>17</height>
        </rect>
       </property>
@@ -430,6 +430,136 @@
        <property name="frameShadow">
         <enum>QFrame::Raised</enum>
        </property>
+       <widget class="QLabel" name="label_12">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>10</y>
+          <width>301</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Business License</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_13">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>70</y>
+          <width>241</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Liability Insurance</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="dashFood">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>140</y>
+          <width>241</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Food Handler Certification</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="dashBus">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>30</y>
+          <width>171</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+       <widget class="QLabel" name="dashBusExp">
+        <property name="geometry">
+         <rect>
+          <x>191</x>
+          <y>30</y>
+          <width>121</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+       <widget class="QLabel" name="dashIns">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>90</y>
+          <width>181</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+       <widget class="QLabel" name="dashInsExp">
+        <property name="geometry">
+         <rect>
+          <x>200</x>
+          <y>90</y>
+          <width>121</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+       <widget class="QLabel" name="dashInsProv">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>120</y>
+          <width>261</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+       <widget class="QLabel" name="dashCert">
+        <property name="geometry">
+         <rect>
+          <x>9</x>
+          <y>160</y>
+          <width>171</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+       <widget class="QLabel" name="dashCertExp">
+        <property name="geometry">
+         <rect>
+          <x>190</x>
+          <y>160</y>
+          <width>121</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
       </widget>
       <widget class="QLabel" name="label_9">
        <property name="geometry">

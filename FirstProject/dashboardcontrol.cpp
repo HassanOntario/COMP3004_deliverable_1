@@ -1,4 +1,4 @@
 #include "dashboardcontrol.h"
 
-DashboardControl::DashboardControl(Vendor* v) : vendor(v) {}
+DashboardControl::DashboardControl(const Vendor* v) : vendor(v) {}
 
