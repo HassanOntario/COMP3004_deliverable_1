@@ -5,6 +5,7 @@
 #include <vector>
 #include "vendor.h"
 #include "storage.h"
+#include "dashboardcontrol.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -29,8 +30,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
     Storage storage;
-    const Vendor* vendorUser;
-
+    DashboardControl dControl;
 
 };
 
