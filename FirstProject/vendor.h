@@ -42,6 +42,10 @@ class Vendor : public User {
     public:
         Vendor(QString username);
 
+        // Polymorphic overrides
+        UserType getUserType() const override { return VENDOR; }
+        QString getUserTypeString() const override { return "Vendor"; }
+
         // setters
         void setCategory(int i);
         void setBusinessInfo(QString n, QString on, QString ea, long pn, QString ma);
@@ -50,22 +54,24 @@ class Vendor : public User {
         void setFoodHandlerCert(int cn, QString ed);
 
         // getters
-        int getCategory() const;
+        Category getCategory() const;
         BusinessInfo getBusinessInfo() const;
         BusinessLicence getBusinessLicence() const;
         Insurance getLiabilityInsurance() const;
         Certification getFoodHandlerCert() const;
 
-        std::vector<MarketDate*> getBookedDates();
+        // notifications
+        void addNotification(const QString& msg);
+        std::vector<QString> getNotifications() const;
+        void clearNotifications();
 
     private:
-        enum Category vendorType; // 0 - Food, 1 - Artisan
+        Category vendorType;
         BusinessInfo businessInfo;
         BusinessLicence businessLicence;
         Insurance liabilityInsurance;
         Certification foodHandlerCert;
-
-        std::vector<MarketDate*> bookedDates;
+        std::vector<QString> notifications;
 };
 
 #endif // VENDOR_H

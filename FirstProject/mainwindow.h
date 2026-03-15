@@ -2,9 +2,20 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QStringListModel>
+#include <QMessageBox>
+#include <QTableWidget>
+#include <QPushButton>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QLabel>
 #include <vector>
+
 #include "vendor.h"
 #include "storage.h"
+#include "bookinglist.h"
+#include "waitlistmanager.h"
+#include "stallbookingcontrol.h"
 #include "dashboardcontrol.h"
 
 QT_BEGIN_NAMESPACE
@@ -18,7 +29,6 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-    const Vendor* itemIn(const std::vector<Vendor>& list, const QString& element) const;
 
 private slots:
     void on_p1Button_clicked();
@@ -29,13 +39,30 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+
+    // Data layer
     Storage storage;
-    DashboardControl dControl;
+    BookingList bookingList;
+    WaitlistManager waitlistManager;
+    StallBookingControl* stallBookingControl;
 
+    // Current session
+    Vendor* currentVendor;
+
+    // Helper methods
+    void populateDashboard();
+    void populateMarketBrowser();
+    void setupMarketBrowserPage();
+    void handleBookStall(int marketIndex);
+    void handleCancelBooking(int marketIndex);
+    void handleJoinWaitlist(int marketIndex);
+    void handleLeaveWaitlist(int marketIndex);
+    void refreshMarketBrowser();
+    void refreshDashboard();
+
+    // Market browser UI elements (built programmatically)
+    QWidget* marketBrowserPage;
+    QTableWidget* marketTable;
 };
-
-
-
-
 
 #endif // MAINWINDOW_H

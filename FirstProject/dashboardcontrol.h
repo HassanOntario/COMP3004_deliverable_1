@@ -3,30 +3,34 @@
 
 #include "user.h"
 #include "vendor.h"
+#include "bookinglist.h"
+#include "waitlistmanager.h"
 
 class DashboardControl {
     public:
-        DashboardControl(Vendor* v);
+        DashboardControl(Vendor* v, BookingList* bl, WaitlistManager* wm);
 
-        // vendor info
-        int getCategory();
-        BusinessInfo getBusinessInfo();
-        BusinessLicence getBusinessLicence();
-        Insurance getLiabilityInsurance();
-        Certification getFoodHanderCert();
+        // vendor info — uses the stored vendor pointer
+        Category getCategory() { return vendor->getCategory(); }
+        BusinessInfo getBusinessInfo() { return vendor->getBusinessInfo(); }
+        BusinessLicence getBusinessLicence() { return vendor->getBusinessLicence(); }
+        Insurance getLiabilityInsurance() { return vendor->getLiabilityInsurance(); }
+        Certification getFoodHandlerCert() { return vendor->getFoodHandlerCert(); }
 
         // stall bookings
-        bool hasBookedDates();
-        std::vector<MarketDate*> getBookedDates();
+        std::vector<Booking*> getActiveBookings();
 
-        // waitlists
+        // waitlist entries
+        std::vector<WaitlistManager::WaitlistEntry> getWaitlistEntries();
 
-        // confirmation messages
-
-        // alerts
+        // notifications
+        std::vector<QString> getNotifications();
+        void clearNotifications();
 
     private:
         Vendor* vendor;
+        BookingList* bookingList;
+        WaitlistManager* waitlistManager;
 };
 
 #endif // DASHBOARDCONTROL_H

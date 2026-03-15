@@ -89,10 +89,38 @@ const std::vector<Vendor>& Storage::getVendors() const {
     return vendors;
 }
 
+std::vector<Vendor>& Storage::getVendorsMutable() {
+    return vendors;
+}
+
 const Organizer& Storage::getOrganizer() const {
     return organizer;
 }
 
 const Admin& Storage::getAdmin() const {
     return admin;
+}
+
+User* Storage::findUser(const QString& username) {
+    for (auto& v : vendors) {
+        if (v.getUsername() == username) {
+            return &v;
+        }
+    }
+    if (organizer.getUsername() == username) {
+        return &organizer;
+    }
+    if (admin.getUsername() == username) {
+        return &admin;
+    }
+    return nullptr;
+}
+
+Vendor* Storage::findVendor(const QString& username) {
+    for (auto& v : vendors) {
+        if (v.getUsername() == username) {
+            return &v;
+        }
+    }
+    return nullptr;
 }

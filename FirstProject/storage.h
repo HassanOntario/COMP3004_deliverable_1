@@ -19,12 +19,13 @@ class Storage {
         void loadData();
         std::vector<MarketDate>& getMarketDates();
         const std::vector<Vendor>& getVendors() const;
-        // std::vector<std::unique_ptr<User>> instead of std::vector<User*>
-        // because we won't have to manually delete.
-        // Keep in mind special behaviour with unique_ptr, e.g.,
-        // it cannot be copied directly (to move, use std::move)
+        std::vector<Vendor>& getVendorsMutable();
         const Organizer& getOrganizer() const;
         const Admin& getAdmin() const;
+
+        // Polymorphic user lookup — returns the User* matching the username, or nullptr
+        User* findUser(const QString& username);
+        Vendor* findVendor(const QString& username);
 
     private:
         std::vector<MarketDate> marketDates;

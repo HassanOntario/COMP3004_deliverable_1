@@ -1,45 +1,45 @@
 #include "marketdate.h"
 
-MarketDate::MarketDate(std::string d) : foodStaffAvailability(0), artisanStaffAvailability(0),
+MarketDate::MarketDate(QString d) : foodStaffAvailability(0), artisanStaffAvailability(0),
     totalStaffAvailability(0), bookedFoodVendors(2), bookedArtisanVendors(2), price(75)
 {
     date = d;
 }
 
 bool MarketDate::addVendor(Vendor* v) {
-    if (v->getCategory() == 0) {
+    if (v->getCategory() == Food) {
         return addFoodVendor(v);
-    } else if (v->getCategory() == 1) {
-        return addFoodVendor(v);
+    } else if (v->getCategory() == Artisan) {
+        return addArtisanVendor(v);
     }
 
     return false;
 }
 
 bool MarketDate::removeVendor(Vendor* v) {
-    if (v->getCategory() == 0) {
+    if (v->getCategory() == Food) {
         return removeFoodVendor(v);
-    } else if (v->getCategory() == 1) {
-        return removeFoodVendor(v);
+    } else if (v->getCategory() == Artisan) {
+        return removeArtisanVendor(v);
     }
 
     return false;
 }
 
 bool MarketDate::hasVendor(Vendor* v) {
-    if (v->getCategory() == 0) {
+    if (v->getCategory() == Food) {
         return hasFoodVendor(v);
-    } else if (v->getCategory() == 1) {
-        return hasFoodVendor(v);
+    } else if (v->getCategory() == Artisan) {
+        return hasArtisanVendor(v);
     }
 
     return false;
 }
 
 bool MarketDate::atVendorCapacity(int category) {
-    if (category == 0) {
+    if (category == Food) {
         return atFoodVendorCapacity();
-    } else if (category == 1) {
+    } else if (category == Artisan) {
         return atArtisanVendorCapacity();
     }
 
@@ -68,5 +68,22 @@ int MarketDate::getBookingStatus() {
     }
 
     return bookingStatus;
+}
+
+int MarketDate::getAvailableSlots(int category) {
+    if (category == Food) {
+        int count = 0;
+        for (Vendor* v : bookedFoodVendors.getBookedSlots()) {
+            if (v == nullptr) count++;
+        }
+        return count;
+    } else if (category == Artisan) {
+        int count = 0;
+        for (Vendor* v : bookedArtisanVendors.getBookedSlots()) {
+            if (v == nullptr) count++;
+        }
+        return count;
+    }
+    return 0;
 }
 
