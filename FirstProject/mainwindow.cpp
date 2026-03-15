@@ -114,8 +114,6 @@ void MainWindow::on_vHome_clicked() {
 }
 
 void MainWindow::on_vDash_clicked() {
-    const Vendor* vendorUser = dControl.getVendor();
-
     ui->loginScreen->setCurrentWidget(ui->vendorDashboard);
 
     ui->vDash->setEnabled(false);
