@@ -5,6 +5,6 @@ bool User::verifyUsername(std::string inputValue) {
     return false;
 }
 
-void User::print() {
+void User::print() const {
     std::cout << username << std::endl;
 }

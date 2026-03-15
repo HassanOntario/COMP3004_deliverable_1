@@ -12,7 +12,7 @@ struct BusinessInfo {
     std::string name;
     std::string ownerName;
     std::string emailAddress;
-    int phoneNumber;
+    long phoneNumber;
     std::string mailingAddress;
 };
 
@@ -23,7 +23,7 @@ struct BusinessLicence {
 };
 
 struct Insurance {
-    int policyNum;
+    long policyNum;
     std::string insuranceProvider;
     std::string expirationDate;
 };
@@ -39,17 +39,17 @@ class Vendor : public User {
 
         // setters
         void setCategory(int i);
-        void setBusinessInfo(std::string n, std::string on, std::string ea, int pn, std::string ma);
+        void setBusinessInfo(std::string n, std::string on, std::string ea, long pn, std::string ma);
         void setBusinessLicence(int ln, std::string ed);
-        void setLiabilityInsurance(int pn, std::string ip, std::string ed);
+        void setLiabilityInsurance(long pn, std::string ip, std::string ed);
         void setFoodHandlerCert(int cn, std::string ed);
 
         // getters
         int getCategory();
-        void printBusinessInfo();
-        void printBusinessLicence();
-        void printLiabilityInsurance();
-        void printFoodHandlerCert();
+        BusinessInfo getBusinessInfo();
+        BusinessLicence getBusinessLicence();
+        Insurance getLiabilityInsurance();
+        Certification getFoodHandlerCert();
 
     private:
         enum Category vendorType; // 0 - Food, 1 - Artisan

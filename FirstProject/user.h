@@ -7,9 +7,10 @@
 class User {
     public:
         User(std::string username) : username(username) {};
+        virtual ~User() {}
 
         bool verifyUsername(std::string inputValue);
-        void print();
+        void print() const;
 
     protected:
         std::string username;

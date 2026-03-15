@@ -11,7 +11,7 @@ void Vendor::setCategory(int i) {
 }
 
 // setters
-void Vendor::setBusinessInfo(std::string n, std::string on, std::string ea, int pn, std::string ma) {
+void Vendor::setBusinessInfo(std::string n, std::string on, std::string ea, long pn, std::string ma) {
     businessInfo.name = n;
     businessInfo.ownerName = on;
     businessInfo.emailAddress = ea;
@@ -24,7 +24,7 @@ void Vendor::setBusinessLicence(int ln, std::string ed) {
     businessLicence.expirationDate = ed;
 };
 
-void Vendor::setLiabilityInsurance(int pn, std::string ip, std::string ed) {
+void Vendor::setLiabilityInsurance(long pn, std::string ip, std::string ed) {
     liabilityInsurance.policyNum = pn;
     liabilityInsurance.insuranceProvider = ip;
     liabilityInsurance.expirationDate = ed;
@@ -40,32 +40,44 @@ int Vendor::getCategory() {
     return vendorType;
 }
 
-void Vendor::printBusinessInfo() {
+BusinessInfo Vendor::getBusinessInfo() {
+    return businessInfo;
+    /*
     std::cout << "Business Name: " << businessInfo.name
               << "\nBusiness Owner: " << businessInfo.ownerName
               << "\nEmail Address: " << businessInfo.emailAddress
               << "\nPhone Number: " << businessInfo.phoneNumber
               << "\nMailing Address: " << businessInfo.mailingAddress
               << std::endl;
+    */
 }
 
-void Vendor::printBusinessLicence() {
+BusinessLicence Vendor::getBusinessLicence() {
+    return businessLicence;
+    /*
     std::cout << "Licence Number: " << businessLicence.licenceNum
               << "\nExpiration Date: " << businessLicence.expirationDate
               << std::endl;
+    */
 }
 
-void Vendor::printLiabilityInsurance() {
+Insurance Vendor::getLiabilityInsurance() {
+    return liabilityInsurance;
+    /*
     std::cout << "Policy Number: " << liabilityInsurance.policyNum
               << "\nInsurance Provider: " << liabilityInsurance.insuranceProvider
               << "\nExpiration Date: " << liabilityInsurance.expirationDate
               << std::endl;
+    */
 }
 
-void Vendor::printFoodHandlerCert() {
+Certification Vendor::getFoodHandlerCert() {
+    return foodHandlerCert;
+    /*
     if (foodHandlerCert.certNum) {
         std::cout << "Certificate Number: " << foodHandlerCert.certNum
                   << "\nExpirationDate: " << foodHandlerCert.expirationDate
                   << std::endl;
     }
+    */
 }
