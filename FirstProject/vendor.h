@@ -3,6 +3,7 @@
 
 #include "user.h"
 #include <QString>
+#include <vector>
 
 
 enum Category {
@@ -35,6 +36,8 @@ struct Certification {
     QString expirationDate;
 };
 
+class MarketDate; // forward referencing to avoid circular dependency
+
 class Vendor : public User {
     public:
         Vendor(QString username);
@@ -53,12 +56,16 @@ class Vendor : public User {
         Insurance getLiabilityInsurance() const;
         Certification getFoodHandlerCert() const;
 
+        std::vector<MarketDate*> getBookedDates();
+
     private:
         enum Category vendorType; // 0 - Food, 1 - Artisan
         BusinessInfo businessInfo;
         BusinessLicence businessLicence;
         Insurance liabilityInsurance;
         Certification foodHandlerCert;
+
+        std::vector<MarketDate*> bookedDates;
 };
 
 #endif // VENDOR_H

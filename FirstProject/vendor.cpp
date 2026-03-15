@@ -1,4 +1,5 @@
 #include "vendor.h"
+#include "marketdate.h"
 
 Vendor::Vendor(QString username) : User(username) {};
 
@@ -80,4 +81,8 @@ Certification Vendor::getFoodHandlerCert() const {
                   << std::endl;
     }
     */
+}
+
+std::vector<MarketDate*> Vendor::getBookedDates() {
+    return bookedDates;
 }
