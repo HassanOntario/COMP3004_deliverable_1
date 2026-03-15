@@ -112,9 +112,16 @@
         <rect>
          <x>310</x>
          <y>10</y>
-         <width>131</width>
+         <width>221</width>
          <height>31</height>
         </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>DejaVu Sans</family>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
        </property>
        <property name="text">
         <string>User Authentication</string>
@@ -126,9 +133,9 @@
      <widget class="QLabel" name="vendorLabel">
       <property name="geometry">
        <rect>
-        <x>220</x>
-        <y>110</y>
-        <width>331</width>
+        <x>10</x>
+        <y>10</y>
+        <width>431</width>
         <height>17</height>
        </rect>
       </property>
@@ -141,9 +148,9 @@
      <widget class="QLabel" name="orgLabel">
       <property name="geometry">
        <rect>
-        <x>220</x>
-        <y>110</y>
-        <width>341</width>
+        <x>10</x>
+        <y>10</y>
+        <width>471</width>
         <height>17</height>
        </rect>
       </property>
@@ -156,14 +163,14 @@
      <widget class="QLabel" name="adminLabel">
       <property name="geometry">
        <rect>
-        <x>230</x>
-        <y>110</y>
-        <width>351</width>
+        <x>10</x>
+        <y>10</y>
+        <width>511</width>
         <height>17</height>
        </rect>
       </property>
       <property name="text">
-       <string>welcome admin, </string>
+       <string>welcome administrator, </string>
       </property>
      </widget>
     </widget>
@@ -220,6 +227,13 @@
           <height>17</height>
          </rect>
         </property>
+        <property name="font">
+         <font>
+          <family>DejaVu Sans</family>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
         <property name="text">
          <string>Business Name</string>
         </property>
@@ -232,6 +246,13 @@
           <width>211</width>
           <height>17</height>
          </rect>
+        </property>
+        <property name="font">
+         <font>
+          <family>DejaVu Sans</family>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
         </property>
         <property name="text">
          <string>Owner Name</string>
@@ -246,6 +267,13 @@
           <height>17</height>
          </rect>
         </property>
+        <property name="font">
+         <font>
+          <family>DejaVu Sans</family>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
         <property name="text">
          <string>Contact Information</string>
         </property>
@@ -258,6 +286,13 @@
           <width>211</width>
           <height>17</height>
          </rect>
+        </property>
+        <property name="font">
+         <font>
+          <family>DejaVu Sans</family>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
         </property>
         <property name="text">
          <string>Vendor Category</string>
@@ -313,6 +348,9 @@
         </property>
         <property name="text">
          <string/>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
         </property>
        </widget>
        <widget class="QLabel" name="dashBusiness">
