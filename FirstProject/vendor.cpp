@@ -1,4 +1,5 @@
 #include "vendor.h"
+#include "marketdate.h"
 
 Vendor::Vendor(QString username) : User(username), vendorType(Food) {};
 
@@ -67,4 +68,8 @@ std::vector<QString> Vendor::getNotifications() const {
 
 void Vendor::clearNotifications() {
     notifications.clear();
+}
+
+std::vector<MarketDate*> Vendor::getBookedDates() {
+    return bookedDates;
 }

@@ -36,6 +36,8 @@ struct Certification {
     QString expirationDate;
 };
 
+class MarketDate; // forward referencing to avoid circular dependency
+
 class Vendor : public User {
     public:
         Vendor(QString username);
