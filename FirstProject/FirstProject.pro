@@ -11,8 +11,10 @@ CONFIG += c++11
 SOURCES += \
     admin.cpp \
     booking.cpp \
+    bookingslots.cpp \
     main.cpp \
     mainwindow.cpp \
+    marketdate.cpp \
     organizer.cpp \
     user.cpp \
     vendor.cpp \
@@ -21,7 +23,9 @@ SOURCES += \
 HEADERS += \
     admin.h \
     booking.h \
+    bookingslots.h \
     mainwindow.h \
+    marketdate.h \
     organizer.h \
     user.h \
     vendor.h \
