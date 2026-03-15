@@ -21,7 +21,9 @@ SOURCES += \
     stallbookingcontrol.cpp \
     user.cpp \
     vendor.cpp \
-    storage.cpp
+    storage.cpp \
+    waitlist.cpp \
+    waitlistmanager.cpp
 
 HEADERS += \
     admin.h \
@@ -35,7 +37,9 @@ HEADERS += \
     stallbookingcontrol.h \
     user.h \
     vendor.h \
-    storage.h
+    storage.h \
+    waitlist.h \
+    waitlistmanager.h
 
 FORMS += \
     mainwindow.ui

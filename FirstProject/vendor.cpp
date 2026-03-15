@@ -1,6 +1,6 @@
 #include "vendor.h"
 
-Vendor::Vendor(QString username) : User(username) {};
+Vendor::Vendor(QString username) : User(username), vendorType(Food) {};
 
 void Vendor::setCategory(int i) {
     if (i == 0) {
@@ -17,18 +17,18 @@ void Vendor::setBusinessInfo(QString n, QString on, QString ea, long pn, QString
     businessInfo.emailAddress = ea;
     businessInfo.phoneNumber = pn;
     businessInfo.mailingAddress = ma;
-};
+}
 
 void Vendor::setBusinessLicence(int ln, QString ed) {
     businessLicence.licenceNum = ln;
     businessLicence.expirationDate = ed;
-};
+}
 
 void Vendor::setLiabilityInsurance(long pn, QString ip, QString ed) {
     liabilityInsurance.policyNum = pn;
     liabilityInsurance.insuranceProvider = ip;
     liabilityInsurance.expirationDate = ed;
-};
+}
 
 void Vendor::setFoodHandlerCert(int cn, QString ed) {
     foodHandlerCert.certNum = cn;
@@ -36,48 +36,35 @@ void Vendor::setFoodHandlerCert(int cn, QString ed) {
 }
 
 // getters
-int Vendor::getCategory() const {
+Category Vendor::getCategory() const {
     return vendorType;
 }
 
 BusinessInfo Vendor::getBusinessInfo() const {
     return businessInfo;
-    /*
-    std::cout << "Business Name: " << businessInfo.name
-              << "\nBusiness Owner: " << businessInfo.ownerName
-              << "\nEmail Address: " << businessInfo.emailAddress
-              << "\nPhone Number: " << businessInfo.phoneNumber
-              << "\nMailing Address: " << businessInfo.mailingAddress
-              << std::endl;
-    */
 }
 
 BusinessLicence Vendor::getBusinessLicence() const {
     return businessLicence;
-    /*
-    std::cout << "Licence Number: " << businessLicence.licenceNum
-              << "\nExpiration Date: " << businessLicence.expirationDate
-              << std::endl;
-    */
 }
 
 Insurance Vendor::getLiabilityInsurance() const {
     return liabilityInsurance;
-    /*
-    std::cout << "Policy Number: " << liabilityInsurance.policyNum
-              << "\nInsurance Provider: " << liabilityInsurance.insuranceProvider
-              << "\nExpiration Date: " << liabilityInsurance.expirationDate
-              << std::endl;
-    */
 }
 
 Certification Vendor::getFoodHandlerCert() const {
     return foodHandlerCert;
-    /*
-    if (foodHandlerCert.certNum) {
-        std::cout << "Certificate Number: " << foodHandlerCert.certNum
-                  << "\nExpirationDate: " << foodHandlerCert.expirationDate
-                  << std::endl;
-    }
-    */
+}
+
+// notifications
+void Vendor::addNotification(const QString& msg) {
+    notifications.push_back(msg);
+}
+
+std::vector<QString> Vendor::getNotifications() const {
+    return notifications;
+}
+
+void Vendor::clearNotifications() {
+    notifications.clear();
 }

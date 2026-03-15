@@ -33,3 +33,23 @@ Booking* BookingList::findBooking(Vendor* v, MarketDate* md) {
 
     return nullptr;
 }
+
+std::vector<Booking*> BookingList::getBookingsByVendor(Vendor* v) {
+    std::vector<Booking*> result;
+    for (Booking* b : bookings) {
+        if (b->getVendor() == v) {
+            result.push_back(b);
+        }
+    }
+    return result;
+}
+
+std::vector<Booking*> BookingList::getBookingsByMarketDate(MarketDate* md) {
+    std::vector<Booking*> result;
+    for (Booking* b : bookings) {
+        if (b->getMarketDate() == md) {
+            result.push_back(b);
+        }
+    }
+    return result;
+}
