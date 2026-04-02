@@ -10,6 +10,9 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <vector>
+#include <QSqlDatabase>
+#include <QSqlQuery>
+#include <QSqlError>
 
 #include "vendor.h"
 #include "storage.h"
@@ -63,6 +66,7 @@ private:
     // Market browser UI elements (built programmatically)
     QWidget* marketBrowserPage;
     QTableWidget* marketTable;
+    QSqlDatabase db;
 };
 
 #endif // MAINWINDOW_H

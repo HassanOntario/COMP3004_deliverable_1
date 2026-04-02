@@ -5,12 +5,20 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <QSqlDatabase>
+#include <QSqlQuery>
+#include <QSqlError>
+#include <QVariant>
+#include <QDebug>
+
 
 #include "user.h"
 #include "vendor.h"
 #include "organizer.h"
 #include "admin.h"
 #include "marketdate.h"
+
+
 
 class Storage {
     public:
@@ -26,6 +34,7 @@ class Storage {
         // Polymorphic user lookup — returns the User* matching the username, or nullptr
         User* findUser(const QString& username);
         Vendor* findVendor(const QString& username);
+        Vendor setVendor(QSqlQuery& query);
 
     private:
         std::vector<MarketDate> marketDates;

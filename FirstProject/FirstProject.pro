@@ -1,4 +1,4 @@
-QT       += core gui
+QT       += core gui sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -44,9 +44,15 @@ HEADERS += \
 FORMS += \
     mainwindow.ui
 
+# Only copy inventory.db if it doesn't already exist in build dir
+copydb.commands = test -f $$OUT_PWD/inventory.db || cp $$PWD/inventory.db $$OUT_PWD/
+QMAKE_EXTRA_TARGETS += copydb
+PRE_TARGETDEPS += copydb
+
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
-DISTFILES +=
+DISTFILES += \
+    schema.sql

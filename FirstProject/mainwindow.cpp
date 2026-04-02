@@ -18,6 +18,21 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+    db = QSqlDatabase::addDatabase("QSQLITE");
+    QString dbPath = QCoreApplication::applicationDirPath() + "/inventory.db";
+    qDebug() << "looking for DB at : " << dbPath;
+
+    db.setDatabaseName(dbPath);
+
+    if (!db.open()) {
+        qDebug() << "DB error: " << db.lastError().text();
+        return;
+    }
+
+    qDebug() << "Database connected successfully";
+
+
+
     storage.loadData();
 
     // Create control objects
