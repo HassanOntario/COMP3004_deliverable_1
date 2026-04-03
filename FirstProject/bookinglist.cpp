@@ -5,12 +5,12 @@ BookingList::BookingList() {
 }
 
 bool BookingList::addBooking(Booking* b) {
-    bookings.push_back(b);
+    // Check for duplicate before adding
     if (std::find(bookings.begin(), bookings.end(), b) != bookings.end()) {
-            return true;
-        }
-
-    return false;
+        return false;
+    }
+    bookings.push_back(b);
+    return true;
 }
 
 bool BookingList::removeBooking(Booking* b) {

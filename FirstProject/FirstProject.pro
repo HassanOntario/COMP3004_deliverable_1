@@ -14,6 +14,7 @@ SOURCES += \
     bookinglist.cpp \
     bookingslots.cpp \
     dashboardcontrol.cpp \
+    databasemanager.cpp \
     main.cpp \
     mainwindow.cpp \
     marketdate.cpp \
@@ -31,6 +32,7 @@ HEADERS += \
     bookinglist.h \
     bookingslots.h \
     dashboardcontrol.h \
+    databasemanager.h \
     mainwindow.h \
     marketdate.h \
     organizer.h \
@@ -44,8 +46,8 @@ HEADERS += \
 FORMS += \
     mainwindow.ui
 
-# Only copy inventory.db if it doesn't already exist in build dir
-copydb.commands = test -f $$OUT_PWD/inventory.db || cp $$PWD/inventory.db $$OUT_PWD/
+# Only copy hintonMarket.sqlite3 if it doesn't already exist in build dir
+copydb.commands = test -f $$OUT_PWD/hintonMarket.sqlite3 || cp $$PWD/hintonMarket.sqlite3 $$OUT_PWD/
 QMAKE_EXTRA_TARGETS += copydb
 PRE_TARGETDEPS += copydb
 

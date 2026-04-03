@@ -2,6 +2,7 @@
 #include <QFile>
 #include <QTextStream>
 #include <QDebug>
+#include <QCoreApplication>
 
 DatabaseManager& DatabaseManager::instance() {
     static DatabaseManager inst;
@@ -10,7 +11,9 @@ DatabaseManager& DatabaseManager::instance() {
 
 bool DatabaseManager::initialize() {
     m_db = QSqlDatabase::addDatabase("QSQLITE");
-    m_db.setDatabaseName("hinton_market.db");  // relative to working dir
+    QString dbPath = QCoreApplication::applicationDirPath() + "/hintonMarket.sqlite3";
+    qDebug() << "DatabaseManager: looking for DB at:" << dbPath;
+    m_db.setDatabaseName(dbPath);
 
     if (!m_db.open()) {
         qCritical() << "Cannot open DB:" << m_db.lastError().text();
@@ -19,10 +22,10 @@ bool DatabaseManager::initialize() {
 
     // Only run schema.sql if this is a fresh DB (tables don't exist yet)
     QSqlQuery check(m_db);
-    check.exec("SELECT name FROM sqlite_master WHERE type='table' AND name='Users'");
+    check.exec("SELECT name FROM sqlite_master WHERE type='table' AND name='users'");
     if (!check.next()) {
         qDebug() << "New database — running schema.sql...";
-        runSchemaFile(":/schema.sql");  // embedded as Qt resource (see Step 3)
+        runSchemaFile("schema.sql");
     } else {
         qDebug() << "Existing database loaded.";
     }

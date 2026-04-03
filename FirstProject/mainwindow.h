@@ -9,10 +9,8 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QComboBox>
 #include <vector>
-#include <QSqlDatabase>
-#include <QSqlQuery>
-#include <QSqlError>
 
 #include "vendor.h"
 #include "storage.h"
@@ -62,11 +60,26 @@ private:
     void handleLeaveWaitlist(int marketIndex);
     void refreshMarketBrowser();
     void refreshDashboard();
+    void loadBookingsFromDb();
+    void loadWaitlistFromDb();
+
+    // Operator page methods
+    void setupOperatorPage();
+    void refreshOperatorStatus();
+    void handleOperatorBook();
+    void handleOperatorCancel();
+    void handleOperatorRemoveWaitlist();
 
     // Market browser UI elements (built programmatically)
     QWidget* marketBrowserPage;
     QTableWidget* marketTable;
-    QSqlDatabase db;
+
+    // Operator page UI elements (built programmatically)
+    QWidget* operatorPage;
+    QComboBox* opVendorCombo;
+    QComboBox* opDateCombo;
+    QLabel* opStatusLabel;
+    QTableWidget* opInfoTable;
 };
 
 #endif // MAINWINDOW_H

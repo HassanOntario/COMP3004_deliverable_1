@@ -55,7 +55,7 @@ CREATE TABLE IF NOT EXISTS stall_bookings (
     vendor_id   INTEGER NOT NULL,
 
     FOREIGN KEY (market_id) REFERENCES market_schedule(market_id),
-    FOREIGN KEY (vendor_id) REFERENCES vendor_profiles(vendor_id),
+    FOREIGN KEY (vendor_id) REFERENCES vendors(vendor_id),
     UNIQUE(market_id, vendor_id)
 );
 
@@ -67,7 +67,7 @@ CREATE TABLE IF NOT EXISTS waitlist (
     joined_at   TEXT DEFAULT CURRENT_TIMESTAMP,
     status      TEXT DEFAULT 'waiting' CHECK(status IN ('waiting','promoted','withdrawn')),
     FOREIGN KEY (market_id) REFERENCES market_schedule(market_id),
-    FOREIGN KEY (vendor_id) REFERENCES vendor_profiles(vendor_id),
+    FOREIGN KEY (vendor_id) REFERENCES vendors(vendor_id),
     UNIQUE(market_id, vendor_id)
 );
 

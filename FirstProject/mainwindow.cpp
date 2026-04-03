@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include "storage.h"
 #include "vendor.h"
+#include "databasemanager.h"
 
 #include <QString>
 #include <QDebug>
@@ -15,31 +16,36 @@ MainWindow::MainWindow(QWidget *parent)
     , currentVendor(nullptr)
     , marketBrowserPage(nullptr)
     , marketTable(nullptr)
+    , operatorPage(nullptr)
+    , opVendorCombo(nullptr)
+    , opDateCombo(nullptr)
+    , opStatusLabel(nullptr)
+    , opInfoTable(nullptr)
 {
     ui->setupUi(this);
 
-    db = QSqlDatabase::addDatabase("QSQLITE");
-    QString dbPath = QCoreApplication::applicationDirPath() + "/inventory.db";
-    qDebug() << "looking for DB at : " << dbPath;
-
-    db.setDatabaseName(dbPath);
-
-    if (!db.open()) {
-        qDebug() << "DB error: " << db.lastError().text();
+    // Initialize the single database connection via DatabaseManager singleton
+    if (!DatabaseManager::instance().initialize()) {
+        qCritical() << "Failed to initialize database. Application may not function correctly.";
         return;
     }
 
     qDebug() << "Database connected successfully";
 
-
-
     storage.loadData();
+
+    // Restore persisted bookings and waitlist entries from database
+    loadBookingsFromDb();
+    loadWaitlistFromDb();
 
     // Create control objects
     stallBookingControl = new StallBookingControl(&bookingList, &waitlistManager);
 
     // Build the market browser page programmatically and add to the stacked widget
     setupMarketBrowserPage();
+
+    // Build the market operator page programmatically and add to the stacked widget
+    setupOperatorPage();
 
     ui->returnLogin->hide();
     ui->vBrowse->hide();
@@ -89,8 +95,8 @@ void MainWindow::on_p1Button_clicked() {
             break;
         }
         case ORGANIZER: {
-            ui->loginScreen->setCurrentWidget(ui->orgPage);
-            ui->orgLabel->setText("Welcome Market Operator, " + username);
+            ui->loginScreen->setCurrentWidget(operatorPage);
+            refreshOperatorStatus();
             break;
         }
         case ADMINISTRATOR: {
@@ -491,6 +497,261 @@ void MainWindow::handleLeaveWaitlist(int marketIndex) {
     refreshMarketBrowser();
 }
 
+// ===================== MARKET OPERATOR =====================
+
+void MainWindow::setupOperatorPage() {
+    operatorPage = new QWidget();
+    operatorPage->setObjectName("operatorPage");
+
+    QVBoxLayout* mainLayout = new QVBoxLayout(operatorPage);
+    mainLayout->setSpacing(12);
+    mainLayout->setContentsMargins(20, 20, 20, 20);
+
+    // Title
+    QLabel* title = new QLabel("<h2>Market Operator Dashboard</h2>");
+    title->setAlignment(Qt::AlignCenter);
+    mainLayout->addWidget(title);
+
+    // --- Vendor selection ---
+    QHBoxLayout* vendorRow = new QHBoxLayout();
+    vendorRow->addWidget(new QLabel("Select Vendor:"));
+    opVendorCombo = new QComboBox();
+    const std::vector<Vendor>& vendors = storage.getVendors();
+    for (const Vendor& v : vendors) {
+        QString label = v.getUsername() + " (" + v.getBusinessInfo().name + " - " +
+                        (v.getCategory() == Food ? "Food" : "Artisan") + ")";
+        opVendorCombo->addItem(label, v.getUsername());
+    }
+    vendorRow->addWidget(opVendorCombo);
+    mainLayout->addLayout(vendorRow);
+
+    // --- Market date selection ---
+    QHBoxLayout* dateRow = new QHBoxLayout();
+    dateRow->addWidget(new QLabel("Select Market Date:"));
+    opDateCombo = new QComboBox();
+    std::vector<MarketDate>& dates = storage.getMarketDates();
+    for (const MarketDate& md : dates) {
+        opDateCombo->addItem(md.getDate());
+    }
+    dateRow->addWidget(opDateCombo);
+    mainLayout->addLayout(dateRow);
+
+    // --- Action buttons ---
+    QHBoxLayout* btnRow = new QHBoxLayout();
+
+    QPushButton* bookBtn = new QPushButton("Book Stall on Behalf");
+    bookBtn->setStyleSheet("background-color: #27ae60; color: white; padding: 8px 16px; border-radius: 4px; font-weight: bold;");
+    connect(bookBtn, &QPushButton::clicked, this, &MainWindow::handleOperatorBook);
+    btnRow->addWidget(bookBtn);
+
+    QPushButton* cancelBtn = new QPushButton("Cancel Booking on Behalf");
+    cancelBtn->setStyleSheet("background-color: #e74c3c; color: white; padding: 8px 16px; border-radius: 4px; font-weight: bold;");
+    connect(cancelBtn, &QPushButton::clicked, this, &MainWindow::handleOperatorCancel);
+    btnRow->addWidget(cancelBtn);
+
+    QPushButton* removeWlBtn = new QPushButton("Remove from Waitlist");
+    removeWlBtn->setStyleSheet("background-color: #e67e22; color: white; padding: 8px 16px; border-radius: 4px; font-weight: bold;");
+    connect(removeWlBtn, &QPushButton::clicked, this, &MainWindow::handleOperatorRemoveWaitlist);
+    btnRow->addWidget(removeWlBtn);
+
+    mainLayout->addLayout(btnRow);
+
+    // --- Status label ---
+    opStatusLabel = new QLabel("");
+    opStatusLabel->setAlignment(Qt::AlignCenter);
+    opStatusLabel->setWordWrap(true);
+    opStatusLabel->setStyleSheet("font-size: 12px; padding: 8px;");
+    mainLayout->addWidget(opStatusLabel);
+
+    // --- Info table: show current bookings and waitlists per market date ---
+    opInfoTable = new QTableWidget();
+    opInfoTable->setColumnCount(5);
+    opInfoTable->setHorizontalHeaderLabels({
+        "Market Date", "Food Stalls\n(Booked/Max)", "Artisan Stalls\n(Booked/Max)",
+        "Food Waitlist", "Artisan Waitlist"
+    });
+    opInfoTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    opInfoTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    opInfoTable->setSelectionMode(QAbstractItemView::NoSelection);
+    opInfoTable->verticalHeader()->setVisible(false);
+    mainLayout->addWidget(opInfoTable);
+
+    mainLayout->addStretch();
+
+    // Add to stacked widget
+    ui->loginScreen->addWidget(operatorPage);
+}
+
+void MainWindow::refreshOperatorStatus() {
+    if (!opInfoTable) return;
+
+    std::vector<MarketDate>& dates = storage.getMarketDates();
+    opInfoTable->setRowCount(dates.size());
+
+    for (int i = 0; i < (int)dates.size(); ++i) {
+        MarketDate& md = dates[i];
+
+        // Date
+        QTableWidgetItem* dateItem = new QTableWidgetItem(md.getDate());
+        dateItem->setTextAlignment(Qt::AlignCenter);
+        opInfoTable->setItem(i, 0, dateItem);
+
+        // Food stalls booked
+        int foodBooked = 2 - md.getAvailableSlots(Food);
+        QTableWidgetItem* foodItem = new QTableWidgetItem(QString::number(foodBooked) + " / 2");
+        foodItem->setTextAlignment(Qt::AlignCenter);
+        opInfoTable->setItem(i, 1, foodItem);
+
+        // Artisan stalls booked
+        int artisanBooked = 2 - md.getAvailableSlots(Artisan);
+        QTableWidgetItem* artisanItem = new QTableWidgetItem(QString::number(artisanBooked) + " / 2");
+        artisanItem->setTextAlignment(Qt::AlignCenter);
+        opInfoTable->setItem(i, 2, artisanItem);
+
+        // Food waitlist
+        Waitlist* foodWl = waitlistManager.getWaitlist(&md, Food);
+        QString foodWlStr = foodWl->isEmpty() ? "(empty)" : QString::number(foodWl->getSize()) + " vendor(s)";
+        QTableWidgetItem* foodWlItem = new QTableWidgetItem(foodWlStr);
+        foodWlItem->setTextAlignment(Qt::AlignCenter);
+        opInfoTable->setItem(i, 3, foodWlItem);
+
+        // Artisan waitlist
+        Waitlist* artisanWl = waitlistManager.getWaitlist(&md, Artisan);
+        QString artisanWlStr = artisanWl->isEmpty() ? "(empty)" : QString::number(artisanWl->getSize()) + " vendor(s)";
+        QTableWidgetItem* artisanWlItem = new QTableWidgetItem(artisanWlStr);
+        artisanWlItem->setTextAlignment(Qt::AlignCenter);
+        opInfoTable->setItem(i, 4, artisanWlItem);
+    }
+
+    opInfoTable->resizeRowsToContents();
+}
+
+void MainWindow::handleOperatorBook() {
+    if (!opVendorCombo || !opDateCombo) return;
+
+    QString vendorUsername = opVendorCombo->currentData().toString();
+    QString dateStr = opDateCombo->currentText();
+
+    Vendor* vendor = storage.findVendor(vendorUsername);
+    if (!vendor) {
+        opStatusLabel->setStyleSheet("color: red; font-size: 12px; padding: 8px;");
+        opStatusLabel->setText("Error: Vendor not found.");
+        return;
+    }
+
+    // Find market date
+    MarketDate* md = nullptr;
+    std::vector<MarketDate>& dates = storage.getMarketDates();
+    for (auto& d : dates) {
+        if (d.getDate() == dateStr) {
+            md = &d;
+            break;
+        }
+    }
+    if (!md) {
+        opStatusLabel->setStyleSheet("color: red; font-size: 12px; padding: 8px;");
+        opStatusLabel->setText("Error: Market date not found.");
+        return;
+    }
+
+    if (stallBookingControl->bookStall(vendor, md)) {
+        opStatusLabel->setStyleSheet("color: green; font-size: 12px; padding: 8px;");
+        opStatusLabel->setText("Success: Booked stall for " + vendor->getBusinessInfo().name +
+                               " on " + dateStr + ".");
+    } else {
+        QString reason;
+        if (stallBookingControl->vendorHasBooking(vendor)) {
+            reason = "Vendor already has an active booking.";
+        } else if (md->atVendorCapacity(vendor->getCategory())) {
+            reason = "No stalls available for vendor's category on this date.";
+        } else {
+            reason = "Booking could not be completed.";
+        }
+        opStatusLabel->setStyleSheet("color: red; font-size: 12px; padding: 8px;");
+        opStatusLabel->setText("Failed: " + reason);
+    }
+
+    refreshOperatorStatus();
+}
+
+void MainWindow::handleOperatorCancel() {
+    if (!opVendorCombo || !opDateCombo) return;
+
+    QString vendorUsername = opVendorCombo->currentData().toString();
+    QString dateStr = opDateCombo->currentText();
+
+    Vendor* vendor = storage.findVendor(vendorUsername);
+    if (!vendor) {
+        opStatusLabel->setStyleSheet("color: red; font-size: 12px; padding: 8px;");
+        opStatusLabel->setText("Error: Vendor not found.");
+        return;
+    }
+
+    MarketDate* md = nullptr;
+    std::vector<MarketDate>& dates = storage.getMarketDates();
+    for (auto& d : dates) {
+        if (d.getDate() == dateStr) {
+            md = &d;
+            break;
+        }
+    }
+    if (!md) {
+        opStatusLabel->setStyleSheet("color: red; font-size: 12px; padding: 8px;");
+        opStatusLabel->setText("Error: Market date not found.");
+        return;
+    }
+
+    if (stallBookingControl->cancelStallBooking(vendor, md)) {
+        opStatusLabel->setStyleSheet("color: green; font-size: 12px; padding: 8px;");
+        opStatusLabel->setText("Success: Cancelled booking for " + vendor->getBusinessInfo().name +
+                               " on " + dateStr + ".");
+    } else {
+        opStatusLabel->setStyleSheet("color: red; font-size: 12px; padding: 8px;");
+        opStatusLabel->setText("Failed: Vendor does not have a booking on this date.");
+    }
+
+    refreshOperatorStatus();
+}
+
+void MainWindow::handleOperatorRemoveWaitlist() {
+    if (!opVendorCombo || !opDateCombo) return;
+
+    QString vendorUsername = opVendorCombo->currentData().toString();
+    QString dateStr = opDateCombo->currentText();
+
+    Vendor* vendor = storage.findVendor(vendorUsername);
+    if (!vendor) {
+        opStatusLabel->setStyleSheet("color: red; font-size: 12px; padding: 8px;");
+        opStatusLabel->setText("Error: Vendor not found.");
+        return;
+    }
+
+    MarketDate* md = nullptr;
+    std::vector<MarketDate>& dates = storage.getMarketDates();
+    for (auto& d : dates) {
+        if (d.getDate() == dateStr) {
+            md = &d;
+            break;
+        }
+    }
+    if (!md) {
+        opStatusLabel->setStyleSheet("color: red; font-size: 12px; padding: 8px;");
+        opStatusLabel->setText("Error: Market date not found.");
+        return;
+    }
+
+    if (stallBookingControl->leaveWaitlist(vendor, md)) {
+        opStatusLabel->setStyleSheet("color: green; font-size: 12px; padding: 8px;");
+        opStatusLabel->setText("Success: Removed " + vendor->getBusinessInfo().name +
+                               " from waitlist for " + dateStr + ".");
+    } else {
+        opStatusLabel->setStyleSheet("color: red; font-size: 12px; padding: 8px;");
+        opStatusLabel->setText("Failed: Vendor is not on the waitlist for this date.");
+    }
+
+    refreshOperatorStatus();
+}
+
 // ===================== REFRESH HELPERS =====================
 
 void MainWindow::refreshMarketBrowser() {
@@ -499,4 +760,90 @@ void MainWindow::refreshMarketBrowser() {
 
 void MainWindow::refreshDashboard() {
     populateDashboard();
+}
+
+// ===================== DB RESTORE HELPERS =====================
+
+void MainWindow::loadBookingsFromDb() {
+    QSqlQuery q(DatabaseManager::instance().db());
+    q.exec("SELECT u.username, ms.market_date "
+           "FROM stall_bookings sb "
+           "JOIN vendors v ON sb.vendor_id = v.vendor_id "
+           "JOIN users u ON v.user_id = u.user_id "
+           "JOIN market_schedule ms ON sb.market_id = ms.market_id");
+
+    while (q.next()) {
+        QString username = q.value("username").toString();
+        QString dateStr = q.value("market_date").toString();
+
+        Vendor* vendor = storage.findVendor(username);
+        if (!vendor) {
+            qWarning() << "loadBookingsFromDb: vendor not found:" << username;
+            continue;
+        }
+
+        // Find the matching MarketDate
+        MarketDate* md = nullptr;
+        std::vector<MarketDate>& dates = storage.getMarketDates();
+        for (auto& d : dates) {
+            if (d.getDate() == dateStr) {
+                md = &d;
+                break;
+            }
+        }
+        if (!md) {
+            qWarning() << "loadBookingsFromDb: market date not found:" << dateStr;
+            continue;
+        }
+
+        // Restore in-memory state: add vendor to market date slots and booking list
+        md->addVendor(vendor);
+        Booking* b = new Booking(vendor, md);
+        bookingList.addBooking(b);
+
+        qDebug() << "Restored booking:" << username << "on" << dateStr;
+    }
+}
+
+void MainWindow::loadWaitlistFromDb() {
+    QSqlQuery q(DatabaseManager::instance().db());
+    q.exec("SELECT u.username, ms.market_date, w.position "
+           "FROM waitlist w "
+           "JOIN vendors v ON w.vendor_id = v.vendor_id "
+           "JOIN users u ON v.user_id = u.user_id "
+           "JOIN market_schedule ms ON w.market_id = ms.market_id "
+           "WHERE w.status = 'waiting' "
+           "ORDER BY ms.market_date, w.position");
+
+    while (q.next()) {
+        QString username = q.value("username").toString();
+        QString dateStr = q.value("market_date").toString();
+
+        Vendor* vendor = storage.findVendor(username);
+        if (!vendor) {
+            qWarning() << "loadWaitlistFromDb: vendor not found:" << username;
+            continue;
+        }
+
+        // Find the matching MarketDate
+        MarketDate* md = nullptr;
+        std::vector<MarketDate>& dates = storage.getMarketDates();
+        for (auto& d : dates) {
+            if (d.getDate() == dateStr) {
+                md = &d;
+                break;
+            }
+        }
+        if (!md) {
+            qWarning() << "loadWaitlistFromDb: market date not found:" << dateStr;
+            continue;
+        }
+
+        // Restore in-memory waitlist (addToWaitlist would re-insert into DB, so use direct access)
+        Category cat = vendor->getCategory();
+        Waitlist* wl = waitlistManager.getWaitlist(md, cat);
+        wl->addVendor(vendor);
+
+        qDebug() << "Restored waitlist:" << username << "on" << dateStr << "pos" << q.value("position").toInt();
+    }
 }

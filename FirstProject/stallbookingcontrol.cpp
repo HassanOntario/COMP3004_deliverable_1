@@ -1,4 +1,8 @@
 #include "stallbookingcontrol.h"
+#include "databasemanager.h"
+#include <QSqlQuery>
+#include <QSqlError>
+#include <QDebug>
 
 StallBookingControl::StallBookingControl(BookingList* bl, WaitlistManager* wm) : bl(bl), wm(wm) {}
 
@@ -23,6 +27,18 @@ bool StallBookingControl::bookStall(Vendor* v, MarketDate* md) {
         Booking* b = new Booking(v, md);
         bl->addBooking(b);
 
+        // Persist booking to database
+        QSqlQuery q(DatabaseManager::instance().db());
+        q.prepare("INSERT INTO stall_bookings (market_id, vendor_id) VALUES ("
+                  "(SELECT market_id FROM market_schedule WHERE market_date = :date), "
+                  "(SELECT vendor_id FROM vendors WHERE user_id = "
+                  "(SELECT user_id FROM users WHERE username = :uname)))");
+        q.bindValue(":date", md->getDate());
+        q.bindValue(":uname", v->getUsername());
+        if (!q.exec()) {
+            qWarning() << "DB INSERT stall_bookings failed:" << q.lastError().text();
+        }
+
         // If vendor was on waitlist for this date, remove them
         wm->removeFromWaitlist(v, md);
 
@@ -40,6 +56,18 @@ bool StallBookingControl::cancelStallBooking(Vendor* v, MarketDate* md) {
         Category cat = v->getCategory();
         md->removeVendor(v);
         bl->removeBooking(b);
+
+        // Remove booking from database
+        QSqlQuery q(DatabaseManager::instance().db());
+        q.prepare("DELETE FROM stall_bookings WHERE "
+                  "market_id = (SELECT market_id FROM market_schedule WHERE market_date = :date) AND "
+                  "vendor_id = (SELECT vendor_id FROM vendors WHERE user_id = "
+                  "(SELECT user_id FROM users WHERE username = :uname))");
+        q.bindValue(":date", md->getDate());
+        q.bindValue(":uname", v->getUsername());
+        if (!q.exec()) {
+            qWarning() << "DB DELETE stall_bookings failed:" << q.lastError().text();
+        }
 
         // Add cancellation confirmation
         v->addNotification("Booking cancelled for " + md->getDate() + ".");
